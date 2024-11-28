@@ -1,0 +1,1 @@
+A colection of simple projeccts of js core concepts

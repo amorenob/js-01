@@ -1,0 +1,16 @@
+/* Add styles here */
+body {
+    background-color: rgb(231, 229, 229);
+    align-content: center;
+}
+
+.p-list {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: large;
+}
+
+.header {
+    text-align: center;
+}

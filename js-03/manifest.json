@@ -1,0 +1,9 @@
+{
+    "manifest_version": 3,
+    "version": "1.1",
+    "name": "Am Leads tracker",
+    "action": {
+        "default_popup": "ch-ext.html",
+        "default_icon": "icon.png"
+    }
+}
