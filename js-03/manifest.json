@@ -5,5 +5,8 @@
     "action": {
         "default_popup": "ch-ext.html",
         "default_icon": "icon.png"
-    }
+    },
+    "permissions":[
+        "tabs"
+    ]
 }
