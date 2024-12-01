@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lato', 'sans-serif';
+}
+
+body {
+    background-image: url(img/bg.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-container {
+    background-color: white;
+    padding: 20px 10px;
+    border-radius: 10px;
+    width: 400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    gap: 10px;
+}
+
+#todoInput {
+    width: 100%;
+    font-size: 1.2rem;
+    padding-left: 5px;
+    outline: none; 
+    border: 2px solid gray; 
+    border-radius: 4px;
+}
+
+#todoInput:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+button {
+    background-color: white;
+    border-radius: 4px;
+    border:     1px solid;
+    cursor: pointer;
+}
+
+.add-btn {
+    text-align: center;
+    border-color: green;
+    color: green;
+    padding: 5px 20px;
+}
+
+.add-btn:hover {
+    color: white;
+    background-color:  green;
+}
+
+.list-container {
+    background-color: transparent;
+    padding: 2px 2px;
+    border-radius: 10px;
+}
+
+.task-container {
+    background-color: rgb(248, 246, 246);
+    padding: 4px 4px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.task-container p {
+    flex: 1;
+    margin-right: 2px;
+    margin-left: 10px;
+}
+
+.task-container.completed p {
+    text-decoration: line-through 2px gray;
+}
+
+.task-container button {
+    margin-left: 4px;  /* space between buttons */
+}
+
+.todo-txt {
+    font-size: 1.2rem;
+}
+
+.check-btn {
+    padding: 15px 20px;
+    color: orange;
+}
+
+.check-btn:hover     {
+    background-color: orange;
+    color: white;
+}
+
+.delete-btn {
+    padding: 15px 20px;
+    color: red;
+}
+
+.delete-btn:hover     {
+    background-color: red;
+    color: white;
+}
