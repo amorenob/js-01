@@ -1,6 +1,16 @@
 const buttonEl = document.querySelector('button')
-console.log(buttonEl)
+const baseUrl = 'https://pokeapi.co/api/v2/pokemon/';
+const pokemon = document.querySelector('#PokeName')
+const pokemonImage = document.querySelector('#pokeImg')
 
+const pokemonList = [
+    "pikachu",
+    "charizard",
+    "mewtwo",
+    "dragonite",
+    "gengar",
+    "dracolux"  // This one is fake
+];
 
 
 setInterval(() => {
@@ -16,3 +26,33 @@ function getRandomColor() {
     }
     return color
 }
+
+buttonEl.addEventListener('click', () => {
+    fetchApidata( pokemon.value.toLowerCase());
+});
+
+
+
+async function fetchApidata(pokemon){
+    try  {
+        const response = await fetch(baseUrl + pokemon)
+
+        if (!response.ok){
+            throw new Error('Cant fetch that poke data');
+        }
+
+        const data = await response.json();
+        const imSrc = data.sprites.front_default;
+        pokemonImage.setAttribute('src', imSrc);
+        return 
+    } catch(error){
+        console.log(error)
+    }
+
+}
+
+function getRandomPokemon(){
+    return pokemonList[Math.floor(Math.random() * pokemonList.length)]
+}
+
+console.log(getRandomPokemon());

@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", serif;
+}
+
+body {
+    background-image: url(img/bg.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-container .header{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#cityInput {
+    font-size: 1.2rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+#getBtn {
+    font-size: 1.2rem;
+    font-weight:500;
+    padding: 5px 15px;
+    background-color: hsl(130, 67%, 47%);
+    color: hsl(0, 0%, 100%);   
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+.main-container .data-container{
+    background: linear-gradient(180deg, hsl(209, 94%, 75%), hsl(40, 92%, 76%));
+    text-align: center;
+    width: 300px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 30px;
+}
+
+#cityName, #temperature{
+    color: hsl(0, 2%, 19%);
+}
+
+#icon{
+    font-size: 5rem;
+}
