@@ -5,24 +5,25 @@ class GameObject {
         this.width = width;
         this.height = height;
         this.velocity = {
-            x: 1,
-            y: 1
+            x: 60,
+            y: 60
         };
         this.isActive = true;
         this.animation = null;
         this.movementPatterns = [];
+        this.deltaTime = 0;
+        this.markedForDeletion = false;
     }
 
     addMovementPattern(pattern, ...args) {
-        console.log(this.movementPatterns);
-        this.movementPatterns.push(pattern);
-        
+        this.movementPatterns.push((gameObject) => pattern(gameObject, ...args));
     }
 
     update(deltaTime) {
-        // Apply all movement patterns
-        this.movementPatterns.forEach(pattern => pattern(this));
-        
+        this.deltaTime = deltaTime;
+        this.movementPatterns.forEach((pattern) => pattern(this));
+        this.markedForDeletion = this.markForDeletion(this);
+
     }
 
     draw(context) {
@@ -51,6 +52,10 @@ class GameObject {
                bounds.right > otherBounds.left &&
                bounds.top < otherBounds.bottom &&
                bounds.bottom > otherBounds.top;
+    }
+
+    markForDeletion(callback) {
+        this.markedForDeletion = this.markedForDeletion || callback(this);
     }
 }
 
