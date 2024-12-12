@@ -38,6 +38,9 @@ class Bishop extends Piece {
         }); 
         return moves;
     }
+    clone() {
+        return new Bishop(this.color, this.position);
+    }
 }
 
 export { Bishop };

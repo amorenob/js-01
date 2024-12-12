@@ -30,7 +30,24 @@ class King extends Piece {
             }
         });
 
+        // check for castling
+        if (!this.hasMoved) {
+            const rook = board.grid[this.position.row][0];
+            const r1ClearPath = !board.grid[this.position.row][1] && !board.grid[this.position.row][2] && !board.grid[this.position.row][3];
+            if (rook && !rook.hasMoved && r1ClearPath) {
+                moves.push({ row: this.position.row, col: 2 });
+            }
+            const rook2 = board.grid[this.position.row][7];
+            const r2ClearPath = !board.grid[this.position.row][5] && !board.grid[this.position.row][6];
+            if (rook2 && !rook2.hasMoved && r2ClearPath) {
+                moves.push({ row: this.position.row, col: 6 });
+            }
+        }
+
         return moves;
+    }
+    clone() {
+        return new King(this.color, this.position);
     }
 }
 

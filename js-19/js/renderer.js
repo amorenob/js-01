@@ -7,7 +7,37 @@ class Renderer {
         this.darkSquareColor = 'gray';
         this.debug = debug;
         this.squareSize = this.canvas.width / 8;
+        this.imagesLoaded = false;
     }
+    
+
+    async initialRender(){
+        await this.loadImages();
+        //console.log('Images loaded');
+        this.render();
+    }
+
+    async loadImages(){
+        
+        const pieces = this.board.grid.flat().filter(piece => piece);
+        const loadPromises = pieces.map(piece => {
+            //console.log(`Loading ${piece.type} image`);
+            return new Promise((resolve) => {
+                if (piece.image.complete) {
+                    //console.log(`${piece.type} already loaded`);
+                    resolve();
+                } else {
+                    piece.image.onload = () => {
+                        //console.log(`${piece.type} loaded`);
+                        resolve();
+                    };
+                }
+            });
+        });
+        await Promise.all(loadPromises);
+        this.imagesLoaded = true;
+    }
+    
     drawBoard() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 

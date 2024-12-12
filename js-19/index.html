@@ -6,12 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- local css -->
   <link rel="stylesheet" href="main.css">
-  <title>Shooting Ravens Game</title>
+  <title>Chess Game</title>
 </head>
 <body>
   <!-- Main container -->
   <div class="main-container">
     <canvas id="chess-board"></canvas>
+    <div class="controls">
+      <p>Current Turn: <span id="current-turn">White</span></p>
+      <p>Game Status: <span id="game-status">In Progress</span></p>
+      <div class="button-container">
+        <button class="save-button" id="save-button">Save</button>
+        <button class="load-button" id="load-button">Load</button>
+      </div>
+    </div>
   </div>
   <script type="module" src="./app.js"></script>
 </body>

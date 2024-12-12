@@ -32,6 +32,9 @@ class Knight extends Piece {
 
         return moves;
     }
+    clone() {
+        return new Knight(this.color, this.position);
+    }
 }
 
 export { Knight };

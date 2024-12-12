@@ -15,6 +15,9 @@ class Queen extends Piece {
         moves.push(...rookMoves, ...bishopMoves);
         return moves;
     }
+    clone() {
+        return new Queen(this.color, this.position);
+    }
 }
 
 export { Queen };

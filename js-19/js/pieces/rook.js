@@ -40,6 +40,9 @@ class Rook extends Piece {
 
         return moves;
     }
+    clone() {
+        return new Rook(this.color, this.position);
+    }
 }
 
 export { Rook };

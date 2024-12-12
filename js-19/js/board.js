@@ -10,12 +10,11 @@ import { King } from './pieces/king.js';
 class Board {
     constructor() {
         this.grid = this.initializeGrid();
-        this.addGlobalClickListener();
         this.selectedPiece = null;
         this.potentialMoves = [];
     }
     initializeGrid() {
-        return Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => null));
+        return Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => null));   
     }
 
     loadFromFen(fen) {
@@ -62,6 +61,16 @@ class Board {
         }
     }
 
+    saveToFen() {
+        let fen = this.grid.map(row => row.map(piece => piece ? piece.getFen() : '1').join('')).join('/');
+        // Wrap consecutive ones with a number
+        for (let i = 8; i >= 2; i--) {
+            fen = fen.replace(new RegExp('1{' + i + '}', 'g'), i);
+        }
+
+        return fen;
+    }
+
     getPieceTypeFromFEN(char) {
         const pieceMap = {
             'p': 'pawn',
@@ -74,10 +83,31 @@ class Board {
         return pieceMap[char];
     }
 
+    clone() {
+        const clonedBoard = new Board();
+        clonedBoard.grid = this.grid.map(row => row.map(piece => piece ? piece.clone() : null));
+        return clonedBoard;
+    }
+
     getPosition(row, col) {
         // Convert grid coordinates to chess notation (e.g., "a8", "e4")
         const files = "abcdefgh";
         return files[col] + (8 - row);
+    }
+
+    getPotentialMoves(piece) {
+        const moves = piece.getValidMoves(this)
+        const filteredMoves = moves.filter(move => !this.wouldBeInCheck(piece, move));
+        return filteredMoves;
+    }
+
+    wouldBeInCheck(piece, move) {
+        const originalPosition = piece.position;
+        const clonedBoard = this.clone();
+        clonedBoard.movePiece(originalPosition, move);
+        const isInCheck = clonedBoard.isSquareAttacked(clonedBoard.getKing(piece.color).position, piece.color);
+        //console.log('isInCheck', move, isInCheck);
+        return isInCheck;
     }
 
     getRowColFromPosition(position) {
@@ -95,41 +125,38 @@ class Board {
         this.grid[to.row][to.col] = piece;
         this.grid[from.row][from.col] = null;
         piece.position = to;
+        piece.hasMoved = true;
     }
 
-    getBlackPieces() {
-        return this.grid.flat().filter(piece => piece && piece.color === 'black');
-    }
+    performCastling(from, to) {
+        const king = this.grid[from.row][from.col];
 
-    getWhitePieces() {
-        return this.grid.flat().filter(piece => piece && piece.color === 'white');
-    }
-
-    // TODO: make this a callback
-    addGlobalClickListener() {
-        document.addEventListener('click', (event) => {
-            const clickedPiece = this.getClickedPiece(event);
-            // Get the piece at the clicked position
-            const piece = this.grid[clickedPiece.row][clickedPiece.col];
-            
-            if (piece) {
-                console.log(piece.position);
-                this.selectedPiece = piece;
-                this.potentialMoves = piece.getValidMoves(this);
-                console.log(this.potentialMoves);
-            } else {
-                if (this.selectedPiece) {
-                    //check if the move is in the potential moves
-                    if (this.potentialMoves.some(move => move.row === clickedPiece.row && move.col === clickedPiece.col)) {
-                        this.movePiece(this.selectedPiece.position, clickedPiece);
-                    } else {
-                        console.log('Invalid move');
-                    }
-                    this.selectedPiece = null;
-                    this.potentialMoves = [];
-                }
+        if (king.type === 'king') {
+            this.movePiece(king.position, to);
+            if (to.col === 2) {
+                this.movePiece(this.grid[from.row][0].position, { row: from.row, col: 3 });
+            } else if (to.col === 6) {
+                this.movePiece(this.grid[from.row][7].position, { row: from.row, col: 5 });
             }
-        });
+        }
+    }
+
+    getPieces(color) {
+        return this.grid.flat().filter(piece => piece && piece.color === color);
+    }
+
+    isSquareAttacked(square, color) {
+        const pieces = this.getPieces(color === 'white' ? 'black' : 'white');
+        for (const piece of pieces) {
+            if (piece.getValidMoves(this).some(move => move.row === square.row && move.col === square.col)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    getKing(color) {
+        return this.getPieces(color).find(piece => piece.type === 'king');
     }
 
     getClickedPiece(event) {
@@ -140,6 +167,7 @@ class Board {
         const col = Math.floor(x / 100); //TODO: make this dynamic
         return { row, col };
     }
+
 
 }
 

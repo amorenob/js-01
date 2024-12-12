@@ -10,6 +10,9 @@ class Piece {
         }
         this.image = new Image();
         this.image.src = this.mapSrcFile();
+        this.hasMoved = false;
+        this.loaded = false;
+
     }
     mapSrcFile(){
         const baseSrc = './assets/pieces/';
@@ -37,6 +40,20 @@ class Piece {
         const row = 8 - parseInt(positionChessNotation[1]);
         const col = positionChessNotation[0].charCodeAt(0) - 'a'.charCodeAt(0);
         return { row, col };
+    }
+    getFen() {
+        const fenMap = {
+            'pawn': 'p',
+            'knight': 'n',
+            'bishop': 'b',
+            'rook': 'r',
+            'queen': 'q',
+            'king': 'k'
+        };
+        return this.color === 'black' ? fenMap[this.type]: fenMap[this.type].toUpperCase();
+    }
+    clone() {
+        throw new Error('Clone not implemented for ' + this.type);
     }
 }
 

@@ -17,9 +17,9 @@ class Pawn extends Piece {
         if (row === startRow) {
             if (board.grid[row + direction][col] === null) {
                 moves.push({ row: row + direction, col });
-            }
-            if (board.grid[row + 2 * direction][col] === null) {
-                moves.push({ row: row + 2 * direction, col });
+                if (board.grid[row + 2 * direction][col] === null) {
+                    moves.push({ row: row + 2 * direction, col });
+                }
             }
         }
 
@@ -28,7 +28,18 @@ class Pawn extends Piece {
             moves.push({ row: row + direction, col });
         }
 
+        // check for captures
+        if (board.grid[row + direction][col + 1] && board.grid[row + direction][col + 1].color !== this.color) {
+            moves.push({ row: row + direction, col: col + 1 });
+        }
+        if (board.grid[row + direction][col - 1] && board.grid[row + direction][col - 1].color !== this.color) {
+            moves.push({ row: row + direction, col: col - 1 });
+        }
+
         return moves;
+    }
+    clone() {
+        return new Pawn(this.color, this.position);
     }
 }
 
