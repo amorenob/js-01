@@ -170,7 +170,7 @@ class Board {
         return this.getPieces(color).find(piece => piece.type === 'king');
     }
 
-    getClickedPiece(event) {
+    getClickedSquare(event) {
         const rect = event.target.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
