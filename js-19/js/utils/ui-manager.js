@@ -24,14 +24,14 @@ export class UIManager {
 
     addSaveButtonListener() {
         this.saveButton.addEventListener('click', () => {
-            console.log(this.game.board.saveToFen());
+            console.log(this.game.saveToFen());
         });
     }
 
     addLoadButtonListener() {
         this.loadButton.addEventListener('click', () => {
             const fenString = prompt("Please enter the FEN string:", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-            if (fenString) {  
+            if (fenString) {
                 this.game.loadFromFen(fenString);
             }
         });

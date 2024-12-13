@@ -8,17 +8,19 @@ class Renderer {
         this.debug = debug;
         this.squareSize = this.canvas.width / 8;
         this.imagesLoaded = false;
+        this.lastTime = 0;
+        this.pieceAnimationSteps = 25;
     }
-    
 
-    async initialRender(){
+
+    async initialRender() {
         await this.loadImages();
         //console.log('Images loaded');
         this.render();
     }
 
-    async loadImages(){
-        
+    async loadImages() {
+
         const pieces = this.board.grid.flat().filter(piece => piece);
         const loadPromises = pieces.map(piece => {
             //console.log(`Loading ${piece.type} image`);
@@ -37,7 +39,7 @@ class Renderer {
         await Promise.all(loadPromises);
         this.imagesLoaded = true;
     }
-    
+
     drawBoard() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -58,15 +60,54 @@ class Renderer {
         this.board.grid.forEach((row, i) => {
             row.forEach((piece, j) => {
                 if (piece) {
-                    this.drawPiece(piece, j, i);
+                    if (!piece.animate) this.drawPiece(piece, j, i);
                 }
             });
         });
     }
-    
+
     drawPiece(piece, x, y) {
         this.ctx.drawImage(piece.image, x * this.squareSize, y * this.squareSize, this.squareSize, this.squareSize);
+        piece.visualX = x * this.squareSize;
+        piece.visualY = y * this.squareSize;
     }
+
+    drawAnimatedPiece(piece, x, y) {
+        // TODO: Make this simpler or more efficient
+        const targetX = x * this.squareSize;
+        const targetY = y * this.squareSize;
+
+        // Calculate the distance to move
+        const distanceX = targetX - piece.visualX;
+        const distanceY = targetY - piece.visualY;
+
+        // Calculate movement speed based on distance
+        if (piece.animationVelocity === null) {
+            piece.animationVelocity = { x: distanceX / this.pieceAnimationSteps, y: distanceY / this.pieceAnimationSteps };
+        }
+        const speed = piece.animationVelocity;
+        const dx = Math.min(Math.abs(distanceX), speed.x);
+        const dy = Math.min(Math.abs(distanceY), speed.y);
+
+        // Update position 
+        piece.visualX += dx;
+        piece.visualY += dy;
+
+        // Draw the piece
+        this.ctx.drawImage(piece.image, piece.visualX, piece.visualY, this.squareSize, this.squareSize);
+
+        // Check if piece reached its destination (with small threshold )
+        const threshold = 0.1;
+        if (Math.abs(piece.visualX - targetX) < threshold &&
+            Math.abs(piece.visualY - targetY) < threshold) {
+            piece.visualX = targetX;
+            piece.visualY = targetY;
+            piece.animate = false;
+            piece.animationVelocity = null;
+            //console.log('Piece animation complete');
+        }
+    }
+
 
     drawPotentialMoves(moves) {
         moves.forEach(move => {
@@ -74,7 +115,7 @@ class Renderer {
             this.ctx.strokeStyle = 'red';
             this.ctx.lineWidth = 2;
             this.ctx.arc(
-                (move.col + 0.5) * this.squareSize, 
+                (move.col + 0.5) * this.squareSize,
                 (move.row + 0.5) * this.squareSize,
                 this.squareSize / 4,
                 0,
@@ -99,7 +140,7 @@ class Renderer {
             }
         }
     }
-    render() {
+    render(currentTime) {
         this.drawBoard();
         this.drawPieces();
         if (this.board.selectedPiece) {
@@ -108,6 +149,19 @@ class Renderer {
         if (this.debug) {
             this.drawDebugInfo();
         }
+        // draw animated pieces
+
+        // check if any piece is animating
+        const animatingPieces = this.board.grid.flat().filter(piece => piece && piece.animate);
+        if (animatingPieces.length > 0) {
+            animatingPieces.forEach(animatedPiece => {
+                const { row, col } = animatedPiece.position;
+                this.drawAnimatedPiece(animatedPiece, col, row);
+            });
+            requestAnimationFrame(this.render.bind(this, currentTime));
+        }
+
+
     }
 
     renderLoop() {

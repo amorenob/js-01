@@ -21,10 +21,25 @@ chess-game/
 │           ├── rook.svg
 │           └── pawn.svg
 │
-├── js/
-│   ├── board.js      // Chessboard logic
-│   ├── piece.js      // ChessPiece class and piece rules
-│   ├── renderer.js   // Canvas rendering logic
-│   ├── events.js     // Input handling
-│   ├── game.js       // Main game logic
-└── app.js            // Entry point, combines all modules 
+├── js/              // JavaScript source files
+│   ├── core/        // Core game logic
+│   │   ├── board.js      // Chessboard logic
+│   │   ├── game.js       // Main game logic
+│   │   └── renderer.js   // Canvas rendering logic
+│   │
+│   ├── pieces/      // Piece-specific logic
+│   │   ├── piece.js      // Base piece class
+│   │   ├── pawn.js
+│   │   ├── rook.js
+│   │   ├── knight.js
+│   │   ├── bishop.js
+│   │   ├── queen.js
+│   │   └── king.js
+│   │
+│   ├── utils/       // Utility functions
+│   │   ├── events.js     // Input handling
+│   │   └── ui-manager.js // UI state management
+│   │
+│   └── app.js       // Entry point
+│
+└── README.md        // Project documentation 

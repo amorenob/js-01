@@ -12,6 +12,10 @@ class Piece {
         this.image.src = this.mapSrcFile();
         this.hasMoved = false;
         this.loaded = false;
+        this.animate = false;
+        this.visualX = 0;
+        this.visualY = 0;
+        this.animationVelocity = null;
 
     }
     mapSrcFile(){

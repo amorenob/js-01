@@ -1,20 +1,30 @@
 
-import { Piece } from './pieces/piece.js';
-import { Pawn } from './pieces/pawn.js';
-import { Rook } from './pieces/rook.js';
-import { Bishop } from './pieces/bishop.js';
-import { Knight } from './pieces/knight.js';
-import { Queen } from './pieces/queen.js';
-import { King } from './pieces/king.js';
+import { Piece } from '../pieces/piece.js';
+import { Pawn } from '../pieces/pawn.js';
+import { Rook } from '../pieces/rook.js';
+import { Bishop } from '../pieces/bishop.js';
+import { Knight } from '../pieces/knight.js';
+import { Queen } from '../pieces/queen.js';
+import { King } from '../pieces/king.js';
 
 class Board {
     constructor() {
         this.grid = this.initializeGrid();
         this.selectedPiece = null;
         this.potentialMoves = [];
+        this.KingCastlingPositions = {
+            white: {
+                king: { row: 7, col: 6 },
+                queen: { row: 7, col: 2 }
+            },
+            black: {
+                king: { row: 0, col: 6 },
+                queen: { row: 0, col: 2 }
+            }
+        };
     }
     initializeGrid() {
-        return Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => null));   
+        return Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => null));
     }
 
     loadFromFen(fen) {
@@ -126,6 +136,7 @@ class Board {
         this.grid[from.row][from.col] = null;
         piece.position = to;
         piece.hasMoved = true;
+        piece.animate = true;
     }
 
     performCastling(from, to) {

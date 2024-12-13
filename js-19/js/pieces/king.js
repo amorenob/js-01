@@ -3,6 +3,7 @@ import { Piece } from './piece.js';
 class King extends Piece {
     constructor(color, position) {
         super('king', color, position);
+        this.isCastlingMove = false;
     }
 
     getValidMoves(board) {
@@ -26,6 +27,7 @@ class King extends Piece {
                 const square = board.grid[row][col];
                 if (!square || square.color !== this.color) {
                     moves.push({ row, col });
+                    this.isCastlingMove = false;
                 }
             }
         });
@@ -36,11 +38,13 @@ class King extends Piece {
             const r1ClearPath = !board.grid[this.position.row][1] && !board.grid[this.position.row][2] && !board.grid[this.position.row][3];
             if (rook && !rook.hasMoved && r1ClearPath) {
                 moves.push({ row: this.position.row, col: 2 });
+                this.isCastlingMove = true;
             }
             const rook2 = board.grid[this.position.row][7];
             const r2ClearPath = !board.grid[this.position.row][5] && !board.grid[this.position.row][6];
             if (rook2 && !rook2.hasMoved && r2ClearPath) {
                 moves.push({ row: this.position.row, col: 6 });
+                this.isCastlingMove = true;
             }
         }
 
