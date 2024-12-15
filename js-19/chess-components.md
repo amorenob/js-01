@@ -30,8 +30,6 @@ const board = [
 - Represent each chess piece
 - Store piece-specific rules
 
-**Implementation Example:**
-
 
 ### c. Player Turns
 

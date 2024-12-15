@@ -44,7 +44,7 @@ class ChessGame {
         this.gameOptions = {
             baseTime: ChessGame.TIME_CONTROLS.RAPID['15-10'].baseTime,
             increment: ChessGame.TIME_CONTROLS.RAPID['15-10'].increment,
-            decrement: 10  // Update interval in milliseconds
+            decrement: 100  // Update interval in milliseconds
         };
         // players remaining Time
         this.playersTime = {
@@ -243,7 +243,7 @@ class ChessGame {
         this.gameOptions = {
             baseTime: baseTime,
             increment: incrementTime,
-            decrement: 10
+            decrement: 100
         };
 
         // Reset board

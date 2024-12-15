@@ -3,7 +3,7 @@ class Piece {
         this.type = type;
         this.color = color;
         // check position notatio
-        if (position.length === 2) {
+        if (typeof position === 'string') {
             this.position = this.getGridCoords(position);
         } else {
             this.position = position;

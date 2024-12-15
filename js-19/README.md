@@ -7,11 +7,9 @@ This project is a comprehensive implementation of chess, built entirely with van
 ## Features
 - Complete chess game implementation
 - Time controls (Rapid, Blitz, Bullet)
-- Move validation and game rules
 - Check and checkmate detection
 - Game history tracking
 - FEN notation support
-- Castling implementation
 - Custom UI manager
 - Canvas-based rendering
 

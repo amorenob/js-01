@@ -6,10 +6,7 @@
 
 2. Piece Placement
     Display chess pieces at their starting positions.
-        Use either:
-            Unicode symbols (♙, ♖, etc.).
-            Custom-drawn shapes (circles, icons).
-            Images (e.g., PNG or SVG).
+        Images (e.g., PNG or SVG).
 
 3. Manual Piece Movement
     Click and drag pieces to move them.
