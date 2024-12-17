@@ -1,3 +1,5 @@
+import { Debug } from '../utils/debug.js'
+
 class Renderer {
     constructor(canvas, board, debug = false) {
         this.canvas = canvas;
@@ -15,7 +17,7 @@ class Renderer {
 
     async initialRender() {
         await this.loadImages();
-        //console.log('Images loaded');
+        Debug.debug('Images loaded');
         this.render();
     }
 

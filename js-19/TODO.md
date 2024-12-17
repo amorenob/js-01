@@ -4,6 +4,5 @@
 * Add 50 move rule
 * Add threefold repetition
 * Add move history
-* Better implementation of logging and debugging
 * Add test cases
 * Add controls to start games with time control

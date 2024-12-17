@@ -45,6 +45,11 @@ class Piece {
         const col = positionChessNotation[0].charCodeAt(0) - 'a'.charCodeAt(0);
         return { row, col };
     }
+
+    getChessPosition(){
+        return `${'abcdefgh'[this.position.col]}${8-this.position.row}`
+    }
+
     getFen() {
         const fenMap = {
             'pawn': 'p',

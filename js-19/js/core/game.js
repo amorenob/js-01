@@ -1,6 +1,8 @@
 import { Board } from './board.js';
 import { Renderer } from './renderer.js';
 import { UIManager } from '../utils/ui-manager.js';
+import { Debug } from '../utils/debug.js'
+
 
 class ChessGame {
     // Define time presets as static property
@@ -129,7 +131,7 @@ class ChessGame {
             const piece = this.board.grid[clickedSquare.row][clickedSquare.col];
 
             if (piece && piece.color === this.currentTurn) {
-                console.log(piece);
+                Debug.debug(`Selected ${this.currentTurn} ${piece.type} at ${piece.getChessPosition()}`)
                 this.board.selectedPiece = piece;
                 this.board.potentialMoves = this.board.getPotentialMoves(piece);
             } else {
@@ -140,7 +142,7 @@ class ChessGame {
                         this.board.selectedPiece = null;
                         this.board.potentialMoves = [];
                     } else {
-                        console.log('Invalid move');
+                        Debug.info('Invalid move');
                     }
                 }
             }
@@ -171,6 +173,7 @@ class ChessGame {
             this.updatePlayersTime();
         }, this.gameOptions.decrement);
         this.gameStatus = 'In Progress';
+        Debug.info('Game started')
     }   
 
     updatePlayersTime() {
@@ -199,7 +202,9 @@ class ChessGame {
         // If the move is a castling move, handle it
         if (selectedPiece.type === 'king' &&
             selectedPiece.isCastlingMove) {
+            Debug.info('Attempting castling')
             this.handleCastling(targetPosition);
+            
         } else {
             this.makeMove(selectedPosition, targetPosition);
         }
@@ -214,7 +219,7 @@ class ChessGame {
             this.board.performCastling(this.board.selectedPiece.position, targetPosition);
             this.switchTurn();
         } else {
-            console.log('Invalid castling rights');
+            Debug.info('Invalid castling rights');
         }
     }
 
