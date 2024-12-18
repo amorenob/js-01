@@ -2,7 +2,7 @@ import { Board } from './board.js';
 import { Renderer } from './renderer.js';
 import { UIManager } from '../utils/ui-manager.js';
 import { Debug } from '../utils/debug.js'
-
+import { SoundManager } from '../utils/sound-manager.js'
 
 class ChessGame {
     // Define time presets as static property
@@ -30,6 +30,7 @@ class ChessGame {
         this.currentTurn = 'white';
         this.debug = debug;
         this.ui = new UIManager(this);
+        this.soundManager = new SoundManager();
         this.addGlobalClickListener();
         this.castlingRights = {
             white: {
@@ -94,7 +95,16 @@ class ChessGame {
     }
 
     makeMove(from, to) {
+        const targetSquare = this.board.getPieceAt(to)
         this.board.movePiece(from, to);
+
+        if(targetSquare){
+            this.soundManager.playCaptureSound()
+        }else {
+            this.soundManager.playMoveSound();
+        }
+
+        
 
         // If king is moved, update castling rights
         if (this.board.selectedPiece.type === 'king' && this.board.selectedPiece.hasMoved) {
@@ -158,6 +168,7 @@ class ChessGame {
 
         if (this.isKingInCheck(this.currentTurn)) {
             this.gameStatus = 'Check!';
+            this.soundManager.playCheckSound();
         } else {
             this.gameStatus = 'In Progress';
         }
@@ -217,6 +228,7 @@ class ChessGame {
 
         if (this.castlingRights[this.currentTurn][castlingSide]) {
             this.board.performCastling(this.board.selectedPiece.position, targetPosition);
+            this.soundManager.playCastlingSound();
             this.switchTurn();
         } else {
             Debug.info('Invalid castling rights');

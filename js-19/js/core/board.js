@@ -156,6 +156,10 @@ class Board {
         return this.grid.flat().filter(piece => piece && piece.color === color);
     }
 
+    getPieceAt(position) {
+        return this.grid[position.row][position.col]
+    }
+
     isSquareAttacked(square, color) {
         const pieces = this.getPieces(color === 'white' ? 'black' : 'white');
         for (const piece of pieces) {
