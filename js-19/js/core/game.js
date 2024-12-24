@@ -57,6 +57,7 @@ class ChessGame {
         this.gameStatus = 'Waiting to start';
         this.loadDefaultGame();
         this.gameInterval = null;
+        this.halfMoveClock = 0;
     }
 
     async startFromFen(fen) {
@@ -98,13 +99,13 @@ class ChessGame {
         const targetSquare = this.board.getPieceAt(to)
         this.board.movePiece(from, to);
 
-        if(targetSquare){
+        if (targetSquare) {
             this.soundManager.playCaptureSound()
-        }else {
+        } else {
             this.soundManager.playMoveSound();
         }
 
-        
+
 
         // If king is moved, update castling rights
         if (this.board.selectedPiece.type === 'king' && this.board.selectedPiece.hasMoved) {
@@ -127,16 +128,25 @@ class ChessGame {
         this.playersTime[this.currentTurn] += this.gameOptions.increment;
         this.ui.updatePlayersTime();
 
-        this.renderer.render();
-        this.switchTurn();
+        // Update halfMoveClock
+        if (this.board.selectedPiece.type === 'pawn' || targetSquare) {
+            this.halfMoveClock = 0;
+        } else {
+            this.halfMoveClock++;
+             Debug.debug(`Half moves Updated = ${this.halfMoveClock}`, 'GENERAL')
+        }
 
+        this.renderer.render();
+
+        this.switchTurn();
+        this.updateGameStatus();
 
     }
 
     // TODO: make this a callback
     addGlobalClickListener() {
         document.addEventListener('click', (event) => {
-            const clickedSquare  = this.board.getClickedSquare(event);
+            const clickedSquare = this.board.getClickedSquare(event);
             // Get the piece at the clicked position
             const piece = this.board.grid[clickedSquare.row][clickedSquare.col];
 
@@ -162,6 +172,17 @@ class ChessGame {
     switchTurn() {
         this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
         this.ui.updateTurnDisplay();
+    }
+
+    startGame() {
+        this.gameInterval = setInterval(() => {
+            this.updatePlayersTime();
+        }, this.gameOptions.decrement);
+        this.gameStatus = 'In Progress';
+        Debug.info('Game started')
+    }
+
+    updateGameStatus(){
         if (this.gameStatus === 'Waiting to start') {
             this.startGame();
         }
@@ -172,20 +193,27 @@ class ChessGame {
         } else {
             this.gameStatus = 'In Progress';
         }
+
         //console.log(this.currentTurn, this.isCheckmate());
+
         if (this.isCheckmate()) {
             this.gameStatus = 'Checkmate!';
         }
+
+        // Check for Stalmate
+        if (this.isStalemate()) {
+            Debug.info('Game over, Stalmate', 'GAMESTATUS')
+            this.gameStatus = 'It\'s Stalmate!!';
+        }
+
+        // Check for Draw 50 moves rule
+        if (this.isDrawBy50MovesRule()) {
+            Debug.info('Is a Draw by 50 Moves rule')
+            this.gameStatus = 'It\'s Stalmate!!';
+        }
+
         this.ui.updateGameStatus(this.gameStatus);
     }
-
-    startGame() {
-        this.gameInterval = setInterval(() => {
-            this.updatePlayersTime();
-        }, this.gameOptions.decrement);
-        this.gameStatus = 'In Progress';
-        Debug.info('Game started')
-    }   
 
     updatePlayersTime() {
         this.playersTime[this.currentTurn] -= this.gameOptions.decrement;
@@ -208,6 +236,18 @@ class ChessGame {
         return moves.length === 0 && !canBeBlocked;
     }
 
+
+    isStalemate() {
+        return !this.isKingInCheck &&
+            this.board.getPieces(this.currentTurn).every(piece, () => 
+                this.board.getPotentialMoves(piece).length === 0 
+            );
+    }
+
+    isDrawBy50MovesRule() {
+        return this.halfMoveClock >= 100;
+    }
+
     handlePieceMove(selectedPosition, targetPosition) {
         const selectedPiece = this.board.selectedPiece;
         // If the move is a castling move, handle it
@@ -215,7 +255,7 @@ class ChessGame {
             selectedPiece.isCastlingMove) {
             Debug.info('Attempting castling')
             this.handleCastling(targetPosition);
-            
+
         } else {
             this.makeMove(selectedPosition, targetPosition);
         }
@@ -243,7 +283,7 @@ class ChessGame {
 
     getGameTimeLeftFormatted() {
         const whiteTime = this.playersTime.white;
-        const blackTime = this.playersTime.black;   
+        const blackTime = this.playersTime.black;
         const gameTimeLeft = {
             white: this.getFormattedTime(whiteTime),
             black: this.getFormattedTime(blackTime)
@@ -271,28 +311,31 @@ class ChessGame {
         // Reset game state
         this.currentTurn = 'white';
         this.gameStatus = 'Waiting to start';
-        
+
         // Reset players time
         this.playersTime = {
             white: this.gameOptions.baseTime,
             black: this.gameOptions.baseTime
         };
-        
+
+        // Reset halfMoveClock
+        this.halfMoveClock = 0;
+
         // Reset castling rights
         this.castlingRights = {
             white: { king: true, queen: true },
             black: { king: true, queen: true }
         };
-        
+
         // Clear history
         this.gameHistory = [];
-        
+
         // Clear intervals
         if (this.gameInterval) {
             clearInterval(this.gameInterval);
             this.gameInterval = null;
         }
-        
+
         // Update UI
         this.renderer.render();
         this.ui.updateTurnDisplay();
